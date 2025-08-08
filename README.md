@@ -80,8 +80,9 @@ It may be used and adapted for non-commercial purposes with proper attribution.
 ## 📄 Author
 
 **Ngoc Hoa Nguyen**  
-MSc Computer Science, University of Nottingham  
-[LinkedIn] | [Portfolio] *(Add links here)*
+BSc Hons Computer Science, University of Nottingham  
+[LinkedIn] | [Portfolio] 
+
 
 ---
 
