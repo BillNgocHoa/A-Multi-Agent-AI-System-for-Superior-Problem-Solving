@@ -81,8 +81,6 @@ It may be used and adapted for non-commercial purposes with proper attribution.
 
 **Ngoc Hoa Nguyen**  
 BSc Hons Computer Science, University of Nottingham  
-[LinkedIn] | [Portfolio] 
-
-
+ [Portfolio] | [LinkedIn] 
 ---
 
