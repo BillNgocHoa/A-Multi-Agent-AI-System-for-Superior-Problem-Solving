@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Chat Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Markdown Libraries-->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+
+    <style>
+        .chat-container {
+            height: calc(100vh - 200px);
+            position: relative;
+        }
+        .message {
+            max-width: 80%;
+            margin: 8px;
+            padding: 12px;
+            border-radius: 15px;
+            position: relative;
+        }
+        .message-content {
+            white-space: pre-wrap;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        .typing-indicator {
+            display: none;
+            padding: 12px;
+            margin: 8px;
+            border-radius: 15px;
+            background-color: #f0f0f0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: typing 1s infinite;
+        }
+        @keyframes typing {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold">AI Agent Chat Interface</h1>
+                <button id="shutdownButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Shutdown Server
+                </button>
+            </div>
+            
+            <!-- System Selection -->
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Select System Type:</label>
+                <select id="systemType" class="w-full p-2 border rounded">
+                    <option value="single">Single Agent (ChatGPT)</option>
+                    <option value="multi">Multi-Agent System</option>
+                </select>
+            </div>
+
+            <!-- Agent Selection (for multi-agent) -->
+            <div id="agentSelection" class="mb-4 hidden">
+                <label class="block text-gray-700 mb-2">Select Agents:</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" class="agent-checkbox" value="Idea Generator">
+                        <span class="ml-2">💡 Idea Generator</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="agent-checkbox" value="Pragmatist">
+                        <span class="ml-2">🎯 Pragmatist</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="agent-checkbox" value="Critic">
+                        <span class="ml-2">🔍 Critic</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" class="agent-checkbox" value="Refiner">
+                        <span class="ml-2">✨ Refiner</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Problem Statement Input -->
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2">Problem Statement:</label>
+                <textarea id="problemStatement" class="w-full p-2 border rounded" rows="3"></textarea>
+            </div>
+
+            <!-- Start Button -->
+            <button id="startButton" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Start Conversation
+            </button>
+
+            <!-- Chat Interface -->
+            <div class="mt-4">
+                <div id="chatContainer" class="chat-container overflow-y-auto bg-gray-50 rounded-lg p-4">
+                    <div id="typingIndicator" class="typing-indicator">
+                        <span></span>
+                        <span style="animation-delay: 0.2s"></span>
+                        <span style="animation-delay: 0.4s"></span>
+                    </div>
+                    <!-- Messages will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const systemTypeSelect = document.getElementById('systemType');
+        const agentSelection = document.getElementById('agentSelection');
+        const startButton = document.getElementById('startButton');
+        const shutdownButton = document.getElementById('shutdownButton');
+        const chatContainer = document.getElementById('chatContainer');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Toggle agent selection based on system type
+        systemTypeSelect.addEventListener('change', () => {
+            agentSelection.classList.toggle('hidden', systemTypeSelect.value === 'single');
+        });
+
+        // Shutdown server
+        shutdownButton.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to shutdown the server?')) {
+                try {
+                    const response = await fetch('/shutdown', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        alert('Server is shutting down. This window will close automatically.');
+                        // Force close the window
+                        window.close();
+                        // If window.close() doesn't work, try to redirect to about:blank
+                        setTimeout(() => {
+                            window.location.href = 'about:blank';
+                        }, 1000);
+                    }
+                } catch (error) {
+                    // console.error('Error:', error);
+                    // alert('Error closing this browser tab. However, the server is already shut down.');
+                    // Force close the window   
+                    window.close();
+                }
+            }
+        });
+
+        // Start conversation
+        startButton.addEventListener('click', async () => {
+            const systemType = systemTypeSelect.value;
+            const problemStatement = document.getElementById('problemStatement').value;
+            
+            if (!problemStatement) {
+                alert('Please enter a problem statement');
+                return;
+            }
+
+            if (systemType === 'multi') {
+                const selectedAgents = Array.from(document.querySelectorAll('.agent-checkbox:checked'))
+                    .map(cb => cb.value);
+                
+                if (selectedAgents.length === 0) {
+                    alert('Please select at least one agent');
+                    return;
+                }
+            }
+
+            // Clear previous messages
+            chatContainer.innerHTML = '';
+            // Re-add the typing indicator
+            chatContainer.appendChild(typingIndicator);
+            
+            // Show typing indicator
+            typingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('/start_conversation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        system_type: systemType,
+                        problem_statement: problemStatement,
+                        selected_agents: systemType === 'multi' ? 
+                            Array.from(document.querySelectorAll('.agent-checkbox:checked'))
+                                .map(cb => cb.value) : []
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Hide typing indicator
+                typingIndicator.style.display = 'none';
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Display messages
+                data.messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'flex items-start mb-4';
+                    
+                    const avatarDiv = document.createElement('div');
+                    avatarDiv.className = 'avatar';
+                    avatarDiv.style.backgroundColor = msg.bg_color;
+                    avatarDiv.textContent = msg.avatar;
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'message';
+                    contentDiv.style.backgroundColor = msg.bg_color;
+                    contentDiv.style.borderColor = msg.color;
+                    contentDiv.style.borderWidth = '1px';
+
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'font-bold mb-1';
+                    headerDiv.style.color = msg.color;
+                    headerDiv.textContent = msg.role;
+
+                    const messageContent = document.createElement('div');
+                    messageContent.className = 'message-content';
+                    messageContent.textContent = msg.content;
+
+                    const timestampDiv = document.createElement('div');
+                    timestampDiv.className = 'text-xs text-gray-500 mt-1';
+                    timestampDiv.textContent = msg.timestamp;
+
+                    contentDiv.appendChild(headerDiv);
+                    contentDiv.appendChild(messageContent);
+                    contentDiv.appendChild(timestampDiv);
+
+                    messageDiv.appendChild(avatarDiv);
+                    messageDiv.appendChild(contentDiv);
+                    chatContainer.appendChild(messageDiv);
+                });
+
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting the conversation');
+                typingIndicator.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
