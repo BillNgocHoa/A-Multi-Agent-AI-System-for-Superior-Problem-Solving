@@ -1,11 +1,9 @@
-# A-Multi-Agent-AI-System-for-Superior-Problem-Solving
-This project explores how multiple AI agents—each with a unique role like idea generator, critic, pragmatist, and refiner—can collaborate using GPT to solve open-ended problems more effectively than a single agent. The system simulates expert teamwork, producing more creative, practical, and well-rounded solutions through structured dialogue.
-
 # Cognitive Synergy: Multi-Agent Collaboration with LLMs for Superior Problem Solving
 
-This project explores a novel approach to problem-solving using a **multi-agent AI system** powered by GPT-4o. Inspired by human teamwork and cognitive diversity theory, four uniquely designed AI agents—**Idea Generator, Critic, Pragmatist, and Refiner**—collaborate within a structured conversation to solve open-ended, real-world problems more effectively than a single AI agent.
+This project investigates whether **a team of AI agents**—each with a distinct cognitive role—can collaboratively solve open-ended, real-world problems **more effectively than a single AI agent**. Inspired by real-world teamwork, the system orchestrates GPT agents through structured dialogue to produce creative, practical, and robust solutions.
 
-> 💡 Result: The system consistently delivers **more thoughtful, practical, and well-rounded solutions** than standalone agents, especially in complex or ambiguous scenarios.
+
+> 🧠 **Goal:** Simulate expert-level discussions using AI to **enhance reasoning and decision-making** for complex or ambiguous challenges.
 
 ---
 
@@ -13,18 +11,39 @@ This project explores a novel approach to problem-solving using a **multi-agent 
 
 - 🤖 **Multi-Agent System**: Four AI agents with distinct personalities and thinking styles work together.
 - 🧠 **Cognitive Diversity**: Roles are designed based on the Six Thinking Hats and research in group intelligence.
-- 🛠️ **Prompt Engineering**: Each agent is defined with role-specific, constraint-based, and behavior-anchored prompts.
+- 🛠️ **Prompt Engineering**: Each agent is defined with role-specific, constraint-based, and behaviour-anchored prompts.
 - 🔁 **Custom Orchestrator**: Manages agent turn-taking via round-robin or priority-based strategies.
 - 🌐 **Web Interface**: Built with Flask for easy interaction, agent selection, and live multi-agent chat visualization.
 - 📊 **Evaluation Framework**: Combines human feedback and LLM evaluation (Gemini) across metrics like creativity, feasibility, and logical flow.
 
 ---
+## 📊 Results & Impact
 
-## 📊 Results at a Glance
+Over **50+ test cases** were conducted on real-world, open-ended problems. The system was evaluated through both **human feedback** and **LLM evaluation (Gemini)**.
 
-- ✅ **88% success rate** across 50+ real-world problem scenarios.
-- 🏆 Rated 8.5/10+ on feasibility, clarity, and constructiveness by real users.
-- 🔍 Outperformed single-agent GPT-4o in creativity and solution robustness for complex tasks.
+### 🏁 Example Problem:  
+**"How to stay focused while working from home on a tight budget?"**
+
+- ✅ Multi-agent system consistently produced 3–5 **high-impact** solutions  
+- ✅ Ideas included realistic practices (e.g., Pomodoro technique, noise-canceling hacks) combined with creative suggestions (e.g., gamification of tasks)
+
+### 📈 Performance Metrics
+
+| Evaluation Criteria       | Human Users (Avg /10) | Gemini LLM |
+|--------------------------|------------------------|------------|
+| Creativity               | 7.55                   | 8.1        |
+| Feasibility              | 8.45                   | 8.9        |
+| Clarity                  | 8.6                    | 9.2        |
+| Logical Flow             | 8.65                   | 9.1        |
+| Role Consistency         | 95%                    | 96%        |
+| Idea Diversity           | 75%                    | 80%        |
+| Constructiveness         | 8.75                   | 9.4        |
+
+- 💡 **88% success rate** across problem types
+- 📉 Failure cases mostly involved misunderstanding or topic drift (12%)
+- 📌 Removing any agent degraded quality, proving value of role diversity
+
+> 🔍 **Conclusion**: The multi-agent system **outperformed single-agent GPT-4o** in generating more holistic, diverse, and robust solutions—especially for ambiguous, high-level, or trade-off-driven problems.
 
 ---
 
@@ -33,6 +52,7 @@ This project explores a novel approach to problem-solving using a **multi-agent 
 - Python, Flask, HTML/CSS
 - OpenAI GPT-4o (via API)
 - Gemini (for independent evaluation)
+- Prompt Engineering
 
 ---
 
@@ -45,6 +65,15 @@ The system supports both CLI and web-based interaction. You can toggle between s
 ## 📌 Why It Matters
 
 This project demonstrates how **collaborative AI systems** can simulate effective team-based reasoning. The results open up pathways for integrating LLM agents into **human decision-making environments**, enhancing creativity, critical thinking, and solution feasibility.
+
+---
+## 📄 License
+
+This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**.  
+It may be used and adapted for non-commercial purposes with proper attribution.  
+**Commercial use is strictly prohibited.**
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 ---
 
